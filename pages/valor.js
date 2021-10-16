@@ -1,4 +1,3 @@
-import Menu from '../components/topmenu';
 import React, { useContext, useState } from 'react';
 import Image from 'next/image'
 import Head from 'next/head';
@@ -24,20 +23,28 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useRouter } from 'next//router';
 import Router from 'next//router';
 import { parseCookies } from 'nookies';
+import Menu from '../components/topmenu';
+import MenuADM from '../components/topmenuADM'
 
-function Valor() {
-
+function Valor(props) {
+    
+    const { user } = useContext(AuthContext);
+    let topmenu;
+    if(user.TYPE_USER == 'Admin'){
+        topmenu = <MenuADM/>;
+    }else{
+        topmenu = <Menu />;
+    }
     function Next() {
         Router.push('/agenda')
     }
-    const { pet } = useContext(AuthContext);
-    const { 'PStoken': token } = parseCookies();
+    
 
     const rota = useRouter()
-    var storedDados = localStorage.getItem("dados_servico");
-    var dados = JSON.parse(storedDados);
+    // var storedDados = localStorage.getItem("dados_servico");
+    
  
-    var total = parseFloat(dados.banho) + parseFloat(dados.tosa) + parseFloat(dados.tosa_hig) + parseFloat(dados.hidra_pelos) + parseFloat(dados.desembaraca) + parseFloat(dados.escova_dentes) + parseFloat(dados.limpa_ouvido) + parseFloat(dados.corte_unha)
+    var total = parseFloat(props.dados.banho) + parseFloat(props.dados.tosa) + parseFloat(props.dados.tosa_hig) + parseFloat(props.dados.hidra_pelos) + parseFloat(props.dados.desembaraca) + parseFloat(props.dados.escova_dentes) + parseFloat(props.dados.limpa_ouvido) + parseFloat(props.dados.corte_unha)
     const formCurrency = new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
@@ -47,8 +54,8 @@ function Valor() {
    
     return (
         <div>
-            <div className="corFundo">
-                <Menu />
+            <div>
+                {topmenu}
 
                 <Head>
                     <title>
@@ -144,15 +151,7 @@ function Valor() {
                         padding: 15px; 
                         background-color: white;
                     }
-                    .corFundo{
-                        background-color: #83c5d6;
-                        position: fixed;
-                        min-width: 100%;
-                        min-height: 100%;
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                    }
+                    
                     h3{
                         color: rgba(237, 141, 57);
                     }
@@ -223,8 +222,9 @@ export async function getServerSideProps(ctx) {
             }
         }
     }
-
+    const { dados_servico } = parseCookies(ctx);
+    var dados = JSON.parse(dados_servico);
     return {
-        props: { }
+        props: {dados}
     };
 }

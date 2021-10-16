@@ -1,5 +1,4 @@
-import Menu from '../components/topmenu';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Image from 'next/image'
 import Head from 'next/head';
 import {
@@ -26,15 +25,28 @@ import Calendar from 'react-calendar'
 import { parseCookies } from 'nookies';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '../contexts/AuthContext';
+import Menu from '../components/topmenu';
+import MenuADM from '../components/topmenuADM'
+import { dadosPet } from '../services/funcContextUser'
 
 
 function Valor() {
 
-  const { pet } = useContext(AuthContext);
+  var data = new Date();
+  var dia = String(data.getDate()).padStart(2, '0');
+  var mes = String(data.getMonth() + 1).padStart(2, '0');
+  var ano = data.getFullYear();
+  var dataAtual = ano + '-' + mes + '-' + dia;
 
-  function Next() {
-    Router.push('/horarios')
-  }
+  const { user } = useContext(AuthContext);
+
+
+    let topmenu;
+    if(user.TYPE_USER == 'Admin'){
+        topmenu = <MenuADM/>;
+    }else{
+        topmenu = <Menu />;
+    }
 
   const [agendamento, setAgendamento] = useState({
     title: "",
@@ -42,54 +54,90 @@ function Valor() {
     endDate: "",
     location: "Room 1"
   });
+
+  const [pet, setPet] = useState({
+    ID_PET: "",
+    ID_USER:  "",
+    NOME_PET: "",
+    PORTE_PET:  "",
+    ENDERECO_PET: "",
+    CATEGORIA_PET:  ""
+  })
+
   const [response, setResponse] = useState({
     formSave: false,
     type: '',
     message: ''
   });
-  console.log(agendamento)
+
+  var datavalida = agendamento.startDate.split('T')
+  var datavalida_2 = agendamento.endDate.split('T')
+ 
   const { 'PStoken': token } = parseCookies();
   const sendAgendamento = async e => {
 
     setResponse({ formSave: true });
-
-    try {
-      const res = await fetch('http://localhost:3030/Servicos/agendamentos', {
-        method: 'POST',
-        body: JSON.stringify(agendamento),
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
-      });
-
-      const responseEnv = await res.json();
-
-
-      if (responseEnv.error) {
+    if((datavalida[0] < dataAtual) || (datavalida_2[0] > datavalida[0])){
+      alert('Data Inválida')
+    }else{
+      try {
+        const res = await fetch(`http://localhost:3030/Servicos/agendamentos/${pet.ID_PET}`, {
+          method: 'POST',
+          body: JSON.stringify(agendamento),
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        });
+  
+        const responseEnv = await res.json();
+  
+  
+        if (responseEnv.error) {
+          setResponse({
+            formSave: false,
+            type: 'error',
+            message: responseEnv.mensagem
+          });
+        } else {
+          setResponse({
+            formSave: false,
+            type: 'success',
+            message: responseEnv.mensagem
+          });
+  
+          setTimeout(() => {
+            Router.push("/finish")
+          }, 1500);
+        }
+      } catch (err) {
         setResponse({
           formSave: false,
           type: 'error',
-          message: responseEnv.mensagem
+          message: "Erro: Falha ao realizar agendamento!"
         });
-      } else {
-        setResponse({
-          formSave: false,
-          type: 'success',
-          message: responseEnv.mensagem
-        });
-
-        setTimeout(() => {
-          Router.push("/finish")
-        }, 1500);
       }
-    } catch (err) {
-      setResponse({
-        formSave: false,
-        type: 'error',
-        message: "Erro: Falha ao realizar agendamento!"
-      });
     }
-
+    
   };
 
+  useEffect(() => {
+
+    const { PStoken } = parseCookies()
+
+    if (PStoken) {
+      dadosPet().then(response =>{
+        
+    setPet({
+      ID_PET: response.pet.ID_PET,
+      ID_USER: response.pet.ID_USER,
+      NOME_PET: response.pet.NOME_PET,
+      PORTE_PET: response.pet.PORTE_PET,
+      ENDERECO_PET: response.pet.ENDERECO_PET,
+      CATEGORIA_PET: response.pet.CATEGORIA_PET  
+    })
+  })
+      
+      
+    }
+  }, [])
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -99,8 +147,8 @@ function Valor() {
 
   return (
     <div>
-      <div className="corFundo">
-        <Menu />
+      <div>
+        {topmenu}
 
         <Head>
           <title>
@@ -196,15 +244,7 @@ function Valor() {
                         padding: 15px; 
                         background-color: white;
                     }
-                    .corFundo{
-                        background-color: #83c5d6;
-                        position: fixed;
-                        min-width: 100%;
-                        min-height: 100%;
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                    }
+                    
                     h3{
                         color: rgba(237, 141, 57);
                     }

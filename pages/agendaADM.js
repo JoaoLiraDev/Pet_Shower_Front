@@ -59,7 +59,7 @@ function Valor(obj) {
       </Head>
 
       <MenuADM />
-      <div className="corFundo">
+      <div>
 
         <style>
           {`

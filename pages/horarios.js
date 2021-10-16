@@ -1,4 +1,3 @@
-import Menu from '../components/topmenu';
 import React, { useContext, useState } from 'react';
 import Image from 'next/image'
 import Head from 'next/head';
@@ -22,19 +21,26 @@ import {
 // import { useForm } from 'react-hook-form';
 // import { AuthContext } from '../contexts/AuthContext';
 import Router from 'next//router';
-
+import Menu from '../components/topmenu';
+import MenuADM from '../components/topmenuADM';
 
 
 function Horarios() {
-
+    const { user } = useContext(AuthContext);
+    let topmenu;
+    if(user.TYPE_USER == 'Admin'){
+        topmenu = <MenuADM/>;
+    }else{
+        topmenu = <Menu />;
+    }
     function Next() {
         Router.push('/finish')
     }
 
     return (
         <div>
-            <div className="corFundo">
-                <Menu />
+            <div>
+            {topmenu}
 
                 <Head>
                     <title>

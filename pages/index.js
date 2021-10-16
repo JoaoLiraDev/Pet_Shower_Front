@@ -23,12 +23,12 @@ import { parseCookies } from 'nookies';
 import { AuthContext } from '../contexts/AuthContext';
 import Router from 'next//router';
 import Menu from '../components/topmenu';
-import MenuADM from '../components/topmenuADM'
+import MenuADM from '../components/topmenuADM';
 
 function Home() {
     const { user } = useContext(AuthContext);
     let topmenu;
-    if(user.EMAIL == 'lirajoao414@gmail.com'){
+    if(user.TYPE_USER == 'Admin'){
         topmenu = <MenuADM/>;
     }else{
         topmenu = <Menu />;
@@ -98,7 +98,7 @@ function Home() {
 
     return (
         <div>
-            <div className="corFundo">
+            <div>
                 {topmenu}
 
                 <Head>
@@ -202,15 +202,7 @@ function Home() {
                         padding: 15px; 
                         background-color: white;
                     }
-                    .corFundo{
-                        background-color: #83c5d6;
-                        position: fixed;
-                        min-width: 100%;
-                        min-height: 100%;
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                    }
+                    
                     h3{
                         color: rgba(237, 141, 57);
                     }

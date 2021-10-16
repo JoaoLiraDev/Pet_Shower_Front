@@ -17,13 +17,16 @@ import {
     UncontrolledDropdown,
     Badge
 } from 'reactstrap';
+import { destroyCookie } from 'nookies';
 
-
-const Menu = (props) => {
+const Menu = (props) => { 
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
-
+    function Logout() {
+        destroyCookie({}, 'PStoken')
+        Router.push('/login')
+    }
     return (
         <div>
             <style>
@@ -60,9 +63,12 @@ const Menu = (props) => {
                         <NavItem>
                             <NavLink className="textcolor" href="/meuAgendamento" >Meus Agendamentos</NavLink>
                         </NavItem>
-
                     </Nav>
-
+                    <Nav>
+                        <NavItem>
+                            <NavLink onClick={Logout}><Image src="/logout.png" alt="Picture of the author" width={20} height={20} /></NavLink>
+                        </NavItem>
+                    </Nav>
                 </Container>
 
             </Navbar>

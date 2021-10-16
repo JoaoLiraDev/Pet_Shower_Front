@@ -1,5 +1,4 @@
-import Menu from '../components/topmenu';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Image from 'next/image'
 import Head from 'next/head';
 import {
@@ -22,14 +21,54 @@ import {
 import { parseCookies } from 'nookies';
 import Router from 'next//router';
 import { AuthContext } from '../contexts/AuthContext';
-
-
+import Menu from '../components/topmenu';
+import MenuADM from '../components/topmenuADM'
+import { dadosPet } from '../services/funcContextUser'
 
 function Finish(obj) {
     const dados = obj.obj[0]
 
-    var storedDados = localStorage.getItem("dados_servico");
-    const { pet } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
+
+    let topmenu;
+    if(user.TYPE_USER == 'Admin'){
+        topmenu = <MenuADM/>;
+    }else{
+        topmenu = <Menu />;
+    }
+
+    var storedDados = JSON.stringify(obj.dados);
+
+    const [pet, setPet] = useState({
+        ID_PET: "",
+        ID_USER:  "",
+        NOME_PET: "",
+        PORTE_PET:  "",
+        ENDERECO_PET: "",
+        CATEGORIA_PET:  ""
+    })
+
+    useEffect(() => {
+
+        const { PStoken } = parseCookies()
+    
+        if (PStoken) {
+          dadosPet().then(response =>{
+            
+        setPet({
+          ID_PET: response.pet.ID_PET,
+          ID_USER: response.pet.ID_USER,
+          NOME_PET: response.pet.NOME_PET,
+          PORTE_PET: response.pet.PORTE_PET,
+          ENDERECO_PET: response.pet.ENDERECO_PET,
+          CATEGORIA_PET: response.pet.CATEGORIA_PET  
+        })
+      })
+          
+          
+        }
+      }, [])
+
     const { 'PStoken': token } = parseCookies();
 
     const [response, setResponse] = useState({
@@ -65,7 +104,7 @@ function Finish(obj) {
                     message: responseEnv.mensagem
                 });
                 setTimeout(() => {
-                    Router.push('/')
+                    Router.push('/meuAgendamento')
                 }, 1500);
 
             }
@@ -82,8 +121,8 @@ function Finish(obj) {
 
     return (
         <div>
-            <div className="corFundo">
-                <Menu />
+            <div>
+                {topmenu}
 
                 <Head>
                     <title>
@@ -184,14 +223,7 @@ function Finish(obj) {
                         padding: 30px; 
                         background-color: white;
                     }
-                    .corFundo{
-                        background-color: #83c5d6;
-                        min-width: 100%;
-                        min-height: 100%;
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                    }
+                    
                     h3{
                         color: rgba(237, 141, 57);
                     }
@@ -275,10 +307,12 @@ export async function getServerSideProps(ctx) {
     });
     var data_return = await res.json();
 
+    const obj = data_return.Query_result;
 
-    const obj = data_return.Query_result
+    const { dados_servico } = parseCookies(ctx);
+    var dados = JSON.parse(dados_servico);
 
     return {
-        props: { obj }
+        props: { obj, dados }
     };
 }

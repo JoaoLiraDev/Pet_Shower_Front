@@ -1,4 +1,3 @@
-import Menu from '../components/topmenu';
 import React, { useContext, useState } from 'react';
 import Image from 'next/image'
 import Head from 'next/head';
@@ -22,12 +21,20 @@ import {
 // import { useForm } from 'react-hook-form';
 import { AuthContext } from '../contexts/AuthContext';
 import Router from 'next//router';
-import { parseCookies } from 'nookies';
+import { parseCookies, setCookie } from 'nookies';
+import Menu from '../components/topmenu';
+import MenuADM from '../components/topmenuADM';
 
 
 function Servicos() {
-    const { pet } = useContext(AuthContext);
-
+    const { user } = useContext(AuthContext);
+    let topmenu;
+    if(user.TYPE_USER == 'Admin'){
+        topmenu = <MenuADM/>;
+    }else{
+        topmenu = <Menu />;
+    }
+  
     const [serv, setServ] = useState({
         banho : 0,
         tosa : 0,
@@ -39,8 +46,6 @@ function Servicos() {
         corte_unha : 0
     });
 
-    console.log(serv);
-    
     const [response, setResponse] = useState({
         formSave: false,
         type: '',
@@ -55,7 +60,12 @@ function Servicos() {
             message: 'Serviço registrado com sucesso'
         });
         setTimeout(() => {
-            localStorage.setItem("dados_servico",JSON.stringify(serv));
+            // localStorage.setItem("dados_servico",JSON.stringify(serv));
+            setCookie(null, 'dados_servico', JSON.stringify(serv), {
+                maxAge: 60 * 60 * 24,
+                path: '/'
+              });
+
             Router.push('/valor')
         }, 1300);
     
@@ -67,8 +77,8 @@ function Servicos() {
 
     return (
         <div>
-            <div className="corFundo">
-                <Menu />
+            <div>
+            {topmenu}
 
                 <Head>
                     <title>
@@ -168,15 +178,6 @@ function Servicos() {
                         border-radius: 50px 50px 50px 50px;
                         padding: 15px; 
                         background-color: white;
-                    }
-                    .corFundo{
-                        background-color: #83c5d6;
-                        position: fixed;
-                        min-width: 100%;
-                        min-height: 100%;
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
                     }
                     h3{
                         color: rgba(237, 141, 57);

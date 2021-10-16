@@ -1,3 +1,6 @@
+body{
+  background-color: #83c5d6;
+}
 *::-webkit-scrollbar-track {
   background-color:rgba(131, 197, 214, 0.3);
 }

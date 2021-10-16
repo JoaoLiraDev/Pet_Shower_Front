@@ -8,6 +8,18 @@ export const AuthContext = createContext({})
 
 export function AuthProvider({ children }) {
 
+  
+  // dadosPet().then(response =>{
+        
+  //   setPet({
+  //     ID_PET: response.pet.ID_PET,
+  //     ID_USER: response.pet.ID_USER,
+  //     NOME_PET: response.pet.NOME_PET,
+  //     PORTE_PET: response.pet.PORTE_PET,
+  //     ENDERECO_PET: response.pet.ENDERECO_PET,
+  //     CATEGORIA_PET: response.pet.CATEGORIA_PET  
+  //   })
+  // })
 
   const [user, setUser] = useState({
     ID_USER: "",
@@ -18,7 +30,8 @@ export function AuthProvider({ children }) {
     CPF: "",
     ENDERECO: "",
     NUMERO: "",
-    COMPLEMENTO: ""
+    COMPLEMENTO: "",
+    TYPE_USER: ""
   });
 
   const [pet, setPet] = useState({
@@ -54,21 +67,11 @@ export function AuthProvider({ children }) {
           CPF: response.user.CPF,
           ENDERECO: response.user.ENDERECO,
           NUMERO: response.user.NUMERO,
-          COMPLEMENTO: response.user.COMPLEMENTO
+          COMPLEMENTO: response.user.COMPLEMENTO,
+          TYPE_USER: response.user.TYPE_USER
         });
       })
       
-      dadosPet().then(response =>{
-        
-        setPet({
-          ID_PET: response.pet.ID_PET,
-          ID_USER: response.pet.ID_USER,
-          NOME_PET: response.pet.NOME_PET,
-          PORTE_PET: response.pet.PORTE_PET,
-          ENDERECO_PET: response.pet.ENDERECO_PET,
-          CATEGORIA_PET: response.pet.CATEGORIA_PET  
-        })
-      })
       
     }
   }, [])

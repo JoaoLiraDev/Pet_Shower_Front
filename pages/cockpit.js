@@ -28,24 +28,35 @@ import Router from 'next//router';
 function Cockpit({ data_return }) {
 
     const dados = data_return.Query_result;
-
-    console.log(dados)
-
-    const dadinho = dados.map((Query_result) =>
-    <tr>
-        <td key={Query_result.NOME}>{Query_result.NOME}</td>
-        <td key={Query_result.NOME_PET}>{Query_result.NOME_PET}</td>
-        <td key={Query_result.CPF}>{Query_result.CPF}</td>
-        <td key={Query_result.TELEFONE}>{Query_result.TELEFONE}</td>
-        <td key={Query_result.DataAgendada}>{Query_result.DataAgendada}</td>
-        <td key={Query_result.horario_1}>{Query_result.horario_1} às {Query_result.horario_2}</td>
-    </tr>
-
-    );
+    const [busca, setBusca] = useState({
+        search:null
+    })
+    function searchSpace(event){
+        let keyword = event.target.value;
+        setBusca({search:keyword})
+      }
+    const items = dados.filter((Query_result)=>{
+        if(busca.search == null)
+            return Query_result
+        else if(Query_result.NOME.toLowerCase().includes(busca.search.toLowerCase()) || Query_result.NOME_PET.toLowerCase().includes(busca.search.toLowerCase()) || Query_result.CPF.toLowerCase().includes(busca.search.toLowerCase()) || Query_result.DataAgendada.toLowerCase().includes(busca.search.toLowerCase())){
+            return Query_result
+        }
+      }).map(Query_result=>{
+        return(
+            <tr>
+                <td key={Query_result.NOME}>{Query_result.NOME}</td>
+                <td key={Query_result.NOME_PET}>{Query_result.NOME_PET}</td>
+                <td key={Query_result.CPF}>{Query_result.CPF}</td>
+                <td key={Query_result.TELEFONE}>{Query_result.TELEFONE}</td>
+                <td key={Query_result.DataAgendada}>{Query_result.DataAgendada}</td>
+                <td key={Query_result.horario_1}>{Query_result.horario_1} às {Query_result.horario_2}</td>
+            </tr>
+        )
+      })
 
     return (
         <div>
-            <div className="corFundo">
+            <div>
                 <MenuADM />
 
                 <Head>
@@ -146,7 +157,6 @@ function Cockpit({ data_return }) {
                     }
                     .corFundo{
                         background-color: #83c5d6;
-                        position: fixed;
                         min-width: 100%;
                         min-height: 100%;
                         background-size: cover;
@@ -175,7 +185,7 @@ function Cockpit({ data_return }) {
                                 </Col>
                                 <Col className="col-md-2">
                                     <FormGroup>
-                                        <Input className="form-control mr-sm-2" type="text" name="nomeDono" id="nomeDono" />
+                                        <Input className="form-control mr-sm-2" type="text" name="nomeDono" id="nomeDono" onChange={(e)=> searchSpace(e)} />
                                     </FormGroup>
                                 </Col>
                                 <Col className="col-md-1">
@@ -185,7 +195,7 @@ function Cockpit({ data_return }) {
                                 </Col>
                                 <Col className="col-md-2">
                                     <FormGroup>
-                                        <Input className="form-control mr-sm-2" type="text" name="nomePet" id="nomePet" />
+                                        <Input className="form-control mr-sm-2" type="text" name="nomePet" id="nomePet" onChange={(e)=> searchSpace(e)} />
                                     </FormGroup>
                                 </Col>
                                 <Col className="col-md-1">
@@ -195,7 +205,7 @@ function Cockpit({ data_return }) {
                                 </Col>
                                 <Col className="col-md-2">
                                     <FormGroup>
-                                        <Input className="form-control mr-sm-2" type="text" name="cpf" id="cpf" />
+                                        <Input className="form-control mr-sm-2" type="text" name="cpf" id="cpf" onChange={(e)=> searchSpace(e)} />
                                     </FormGroup>
                                 </Col>
                                 <Col className="col-md-1">
@@ -205,7 +215,7 @@ function Cockpit({ data_return }) {
                                 </Col>
                                 <Col className="col-md-2">
                                     <FormGroup>
-                                        <Input className="form-control mr-sm-2" type="text" name="data" id="data" />
+                                        <Input className="form-control mr-sm-2" type="text" name="data" id="data" onChange={(e)=> searchSpace(e)} />
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -230,7 +240,7 @@ function Cockpit({ data_return }) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {dadinho}
+                                            {items}
                                         </tbody>
                                     </Table>
                                 </Col>

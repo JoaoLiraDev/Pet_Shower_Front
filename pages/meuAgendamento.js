@@ -1,4 +1,3 @@
-import Menu from '../components/topmenu';
 import React, { useContext, useState } from 'react';
 import Image from 'next/image'
 import Head from 'next/head';
@@ -22,10 +21,19 @@ import {
 import { parseCookies } from 'nookies';
 import Router from 'next//router';
 import { AuthContext } from '../contexts/AuthContext';
+import CardAgenda from '../components/cardAgendamento';
+import Menu from '../components/topmenu';
+import MenuADM from '../components/topmenuADM';
 
 
-
-function meuAgendamento({data_return}) {
+function meuAgendamento({data_return}) { 
+    const { user } = useContext(AuthContext);
+    let topmenu;
+    if(user.TYPE_USER == 'Admin'){
+        topmenu = <MenuADM/>;
+    }else{
+        topmenu = <Menu />;
+    }
     const dados = data_return.Query_result;
 
     const dadinho = dados.map((Query_result) =>
@@ -51,18 +59,36 @@ function meuAgendamento({data_return}) {
                     </div>
                 </Row>
             </Col>
-                <h4>Caso precise, entre em contato conosco: tel 41870817</h4>
+                <h4>Caso precise, entre em contato conosco: (11) 4187-0817</h4>
+            <Col className="col-md-12">
+                <Row>
+                    {/* <div className="col-md-3">
+                        <button type="submit" className="btn" onClick={() => Router.push('/home')}>Novo Agendamento</button>
+                    </div>
+                   */}
+                    <div className="col-md-3">
+                        <button type="submit" className="btn">Cancelar</button>
+                    </div>
+                    <div className="col-md-3">
+                        <button type="submit" className="btn" onClick={() => Router.push('/home')}>Remarcar</button>
+                    </div>
+                </Row>
+            </Col>
 
-            <br />
         </div>
+       
     );
-
     console.log(dados)
-
+    var card;
+    if (dados == ''){
+        card = <CardAgenda />
+    }else{
+        card = dadinho
+    }
     return (
         <div>
-            <div className="corFundo">
-                <Menu />
+            <div>
+                {topmenu}
 
                 <Head>
                     <title>
@@ -82,8 +108,7 @@ function meuAgendamento({data_return}) {
                         text-transform: uppercase;
                         font-size: 11px;
                         font-weight: bold;
-                        margin: 0 15px 0 140px;
-                        padding: 10px 15px;
+                        margin: 20px 15px -20px 100px;
                         overflow: hidden;
                         border: 2px solid #ed8d39;
                         position: relative;
@@ -93,23 +118,22 @@ function meuAgendamento({data_return}) {
                         
                     }
                     .btn:before{
-                    content: '';
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 100%;
-                    height: 100%;
-                    background-color: #faad69;
-                    z-index: -1;     
-                    transition: 0.7s ease;
+                        content: '';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 100%;
+                        height: 100%;
+                        background-color: #faad69;
+                        z-index: -1;     
+                        transition: 0.7s ease;
                     }
                     
                     
                     }
                     #btnNext{
                         width: 100px;
-                        float: right !important;
                         
                     }
                     .divMain1{
@@ -118,7 +142,7 @@ function meuAgendamento({data_return}) {
                         float:left;
                     }
                     .divMain2{
-                        margin-top:200px;
+                        margin-top:150px;
                         
                     }
                     .alert-hidden {
@@ -154,26 +178,21 @@ function meuAgendamento({data_return}) {
                         margin-left: 16px;
                         }
                         .bordinha{
-                        border-top-style: solid;
-                        border-bottom-style: solid;
-                        border-left-style: solid;
-                        border-right-style: solid;
-                        border-color: rgba(237, 141, 57);
-                        border-radius: 50px 50px 50px 50px;
-                        padding: 30px; 
-                        background-color: white;
-                        margin-bottom: 10px;
+                            border-top-style: solid;
+                            border-bottom-style: solid;
+                            border-left-style: solid;
+                            border-right-style: solid;
+                            border-color: rgba(237, 141, 57);
+                            border-radius: 50px 50px 50px 50px;
+                            padding: 50px 50px 50px 50px; 
+                            background-color: white;
+                            margin-top: 20px;
+                            width: 500px;
                     }
-                    .corFundo{
-                        background-color: #83c5d6;
-                        min-width: 100%;
-                        min-height: 100%;
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                    }
+                    
                     h3{
                         color: rgba(237, 141, 57);
+                        text-align: center;
                     }
                     h4{
                         text-align: center;
@@ -183,23 +202,17 @@ function meuAgendamento({data_return}) {
                     `}
                 </style>
 
-                <Container className="imgLogin">
-                    <div className="col-md-8 offset-2 divMain2" >
-                        {dadinho}
-                        <Col className="col-md-12">
-                            <Row>
-                                <div className="col-md-3">
-                                    <button type="submit" className="btn">Adicionar outro agendamento</button>
-                                </div>
-                                <div className="col-md-3">
-                                    <button type="submit" className="btn">Cancelar agendamento</button>
-                                </div>
-                                <div className="col-md-3">
-                                    <button type="submit" className="btn">Remarcar</button>
-                                </div>
-                            </Row>
-                        </Col>
+                <Container >
+                    <div className="divMain2">
+                   
+                    <Row>
+                    <div className="col-md-8 offset-3" >
+                        {card}
+                        {/* {dadinho}
+                        <CardAgenda /> */}
                         <br/>
+                    </div>
+                    </Row>
                     </div>
                 </Container>
 

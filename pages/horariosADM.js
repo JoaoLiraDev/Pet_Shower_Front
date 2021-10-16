@@ -30,7 +30,7 @@ function Cockpit() {
 
     return (
         <div>
-            <div className="corFundo">
+            <div>
                 <MenuADM />
 
                 <Head>
@@ -219,3 +219,22 @@ function Cockpit() {
 
 };
 export default Cockpit;
+
+
+export async function getServerSideProps(ctx) {
+
+    const { PStoken } = parseCookies(ctx)
+  
+    if (!PStoken) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        }
+      }
+    }
+  
+    return {
+      props: {}
+    };
+  }
