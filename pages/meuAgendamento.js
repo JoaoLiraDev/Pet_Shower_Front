@@ -111,7 +111,7 @@ function meuAgendamento({data_return}) {
                 </Row>
                 <Row>
                     <div className="col-md-6">
-                        <h4 key={Query_result.DataAgendada}>Pet: {Query_result.DataAgendada}</h4>
+                        <h4 key={Query_result.DataAgendada}>Data Agendada: {Query_result.DataAgendada}</h4>
                     </div>
                     <div className="col-md-6">
                         <h4 key={Query_result.horario_1}>Horário: {Query_result.horario_1} às {Query_result.horario_2}</h4>
