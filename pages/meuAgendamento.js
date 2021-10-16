@@ -18,7 +18,7 @@ import {
     Label,
     Alert
 } from 'reactstrap';
-import { parseCookies } from 'nookies';
+import { parseCookies, setCookie } from 'nookies';
 import Router from 'next//router';
 import { AuthContext } from '../contexts/AuthContext';
 import CardAgenda from '../components/cardAgendamento';
@@ -35,6 +35,65 @@ function meuAgendamento({data_return}) {
         topmenu = <Menu />;
     }
     const dados = data_return.Query_result;
+
+    function remarcar(id_pet, nome_pet){
+        const pet = {
+            "NOME_PET": `${nome_pet}`,
+            "id_pet": `${id_pet}`
+        }
+        setCookie(null, 'id_pet_reagendar', JSON.stringify(pet), {
+            maxAge: 60 * 60 * 24,
+            path: '/'
+          });
+          Router.push('/reagendar')
+    }
+
+    const { 'PStoken': token } = parseCookies();
+
+    const [response, setResponse] = useState({
+        formSave: false,
+        type: '',
+        message: ''
+    });
+
+
+    const apagarAgendamento = async (id_agendamento) => {
+     
+
+        try {
+            const res = await fetch(`http://localhost:3030/Servicos/delete_agendamento/${id_agendamento}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+            });
+            const responseEnv = await res.json();
+
+            if (responseEnv.error) {
+                setResponse({
+                    formSave: false,
+                    type: 'error',
+                    message: responseEnv.mensagem
+                });
+            } else {
+                setResponse({
+                    formSave: false,
+                    type: 'success',
+                    message: responseEnv.mensagem
+                });
+
+
+            }
+        } catch (err) {
+            setResponse({
+                formSave: false,
+                type: 'error',
+                message: "Erro: Falha ao deletar Agendamento!"
+            });
+        }
+
+        setTimeout(() => {
+            Router.reload()
+        }, 2500);
+    };
 
     const dadinho = dados.map((Query_result) =>
         <div className="bordinha">
@@ -67,10 +126,10 @@ function meuAgendamento({data_return}) {
                     </div>
                    */}
                     <div className="col-md-3">
-                        <button type="submit" className="btn">Cancelar</button>
+                        <button type="submit" onClick={()=> apagarAgendamento(Query_result.id_pet)} className="btn">Cancelar</button>
                     </div>
                     <div className="col-md-3">
-                        <button type="submit" className="btn" onClick={() => Router.push('/home')}>Remarcar</button>
+                        <button type="submit" className="btn" onClick={() => remarcar(Query_result.id_pet, Query_result.NOME_PET)}>Remarcar</button>
                     </div>
                 </Row>
             </Col>
@@ -78,7 +137,6 @@ function meuAgendamento({data_return}) {
         </div>
        
     );
-    console.log(dados)
     var card;
     if (dados == ''){
         card = <CardAgenda />
@@ -204,7 +262,9 @@ function meuAgendamento({data_return}) {
 
                 <Container >
                     <div className="divMain2">
-                   
+                    {response.type === 'error' ? <Alert color="danger">{response.message}</Alert> : ""}
+                    {response.type === 'success' ? <Alert color="success">{response.message}</Alert> : ""}
+
                     <Row>
                     <div className="col-md-8 offset-3" >
                         {card}
