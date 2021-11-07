@@ -1,5 +1,5 @@
-import MenuADM from '../components/topmenuADM';
 import React, { useContext, useState } from 'react';
+import MenuADM from '../components/topmenuADM';
 import Image from 'next/image'
 import Head from 'next/head';
 import {
@@ -22,7 +22,7 @@ import {
 } from 'reactstrap';
 import { parseCookies } from 'nookies';
 import Router from 'next//router';
-
+import InputMask from 'react-input-mask';
 
 
 function Cockpit({ data_return }) {

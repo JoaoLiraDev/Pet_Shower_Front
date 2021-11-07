@@ -50,11 +50,12 @@ function Valor() {
 
   const [agendamento, setAgendamento] = useState({
     title: "",
+    dt_agend: "",
     startDate: "",
     endDate: "",
     location: "Room 1"
   });
-
+  console.log(agendamento)
   const [pet, setPet] = useState({
     ID_PET: "",
     ID_USER:  "",
@@ -70,14 +71,11 @@ function Valor() {
     message: ''
   });
 
-  var datavalida = agendamento.startDate.split('T')
-  var datavalida_2 = agendamento.endDate.split('T')
- 
   const { 'PStoken': token } = parseCookies();
   const sendAgendamento = async e => {
 
     setResponse({ formSave: true });
-    if((datavalida[0] < dataAtual) || (datavalida_2[0] > datavalida[0])){
+    if((agendamento.dt_agend < dataAtual)){
       alert('Data Inválida')
     }else{
       try {
@@ -278,14 +276,23 @@ function Valor() {
                   </Row>
                   <Row>
                     <Col className="col-md-10 offset-1">
-                      <Label for="startDate">De:</Label>
-                      <Input className="form-control mr-sm-2" type="datetime-local" name="startDate" id="startDate"{...register("startDate", { required: 'Insira uma data e hora inicial.' })} onChange={onChangeInput} />
+                      <Label for="dt_agend">Dia do Agendamento:</Label>
+                      <Input className="form-control mr-sm-2" type="date" name="dt_agend" id="dt_agend"{...register("dt_agend", { required: 'Insira uma data e hora inicial.' })} onChange={onChangeInput} />
                     </Col>
                   </Row>
                   <Row>
-                    <Col className="col-md-10 offset-1">
-                      <Label for="endDate">Até:</Label>
-                      <Input className="form-control mr-sm-2" type="datetime-local" name="endDate" id="endDate"{...register("endDate", { required: 'Insira uma data e hora final.' })} onChange={onChangeInput} />
+                    <Col className="col-md-5 offset-1">
+                    <Label for="startDate">Selecione um hórário:</Label>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="col-md-5  offset-1">
+                      
+                      <Input className="form-control mr-sm-2" type="time" name="startDate" id="startDate"{...register("startDate", { required: 'Insira uma data e hora final.' })} onChange={onChangeInput} />
+                    </Col>
+                    <Col className="col-md-5">
+                      
+                      <Input className="form-control mr-sm-2" type="time" name="endDate" id="endDate"{...register("endDate", { required: 'Insira uma data e hora final.' })} onChange={onChangeInput} />
                     </Col>
                   </Row>
                   <br />

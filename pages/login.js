@@ -43,7 +43,7 @@ function Login() {
     }
 
     function Cadastrar() {
-        Router.push('/Cadastrar')
+        Router.push('/novoCadastro')
     }
 
     return (
@@ -74,8 +74,7 @@ function Login() {
                     position: relative;
                     z-index: 2; 
                     color: #853e00;
-                    
-                    
+                    width: 120px;   
                 }
                 .btn:before{
                   content: '';
@@ -180,13 +179,13 @@ function Login() {
 
                     <Form onSubmit={handleSubmit(sendLogin)} noValidate>
                         <Row>
-                            <Col className="col-md-10">
+                            <Col className="col-md-10 offset-1">
                                 <Label for="email">Email:</Label>
                                 <Input className="form-control mr-sm-2" type="text" name="email" id="email"{...register("email", { required: 'Insira um e-mail.', pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, message: 'Insira um e-mail válido', } })} placeholder="Email:" onChange={onChangeInput} />
                             </Col>
                         </Row>
                         <Row>
-                            <Col className="col-md-10">
+                            <Col className="col-md-10 offset-1">
                                 <Label for="senha">Password:</Label>
                                 <Input className="form-control mr-sm-2" type="password" name="senha" id="senha" {...register("senha", { required: 'Insira uma senha' })} placeholder="Password:" onChange={onChangeInput} />
                             </Col>
@@ -195,7 +194,7 @@ function Login() {
                         <button type="submit" className="btn btnAnimado" id="btnLogin" >Login</button>
                         <div className="separator">ou faça seu cadastro agora.</div>
                     </Form>
-                    <button type="submit" className="btn" id="btnCadastrar">Cadastrar-se</button>
+                    <button type="submit" className="btn" id="btnCadastrar" onClick={Cadastrar}>Cadastrar-se</button>
                     </div>
                 </div>
             </Container>
