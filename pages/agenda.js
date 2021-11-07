@@ -278,21 +278,9 @@ function Valor() {
                     <Col className="col-md-10 offset-1">
                       <Label for="dt_agend">Dia do Agendamento:</Label>
                       <Input className="form-control mr-sm-2" type="date" name="dt_agend" id="dt_agend"{...register("dt_agend", { required: 'Insira uma data e hora inicial.' })} onChange={onChangeInput} />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="col-md-5 offset-1">
-                    <Label for="startDate">Selecione um hórário:</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="col-md-5  offset-1">
                       
+                      <Label for="startDate">Horário do Agendamento:</Label>
                       <Input className="form-control mr-sm-2" type="time" name="startDate" id="startDate"{...register("startDate", { required: 'Insira uma data e hora final.' })} onChange={onChangeInput} />
-                    </Col>
-                    <Col className="col-md-5">
-                      
-                      <Input className="form-control mr-sm-2" type="time" name="endDate" id="endDate"{...register("endDate", { required: 'Insira uma data e hora final.' })} onChange={onChangeInput} />
                     </Col>
                   </Row>
                   <br />
